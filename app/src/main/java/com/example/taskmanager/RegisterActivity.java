@@ -1,9 +1,7 @@
 package com.example.taskmanager;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -11,20 +9,20 @@ import android.widget.Toast;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private EditText editTextLoginUsername;
-    private EditText editTextLoginPassword;
+    private EditText editTextRegisterUsername;
+    private EditText editTextRegisterPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        editTextLoginUsername = findViewById(R.id.editTextLoginUsername);
-        editTextLoginPassword = findViewById(R.id.editTextLoginPassword);
+        editTextRegisterUsername = findViewById(R.id.editTextRegisterUsername);
+        editTextRegisterPassword = findViewById(R.id.editTextRegisterPassword);
     }
 
     public void onClickRegister(View view) {
-        String username = editTextLoginUsername.getText().toString().trim();
-        String password = editTextLoginPassword.getText().toString().trim();
+        String username = editTextRegisterUsername.getText().toString().trim();
+        String password = editTextRegisterPassword.getText().toString().trim();
         if (!username.isEmpty() && !password.isEmpty()) {
             String sql = "select * from person where username = '" + username + "'";
 
