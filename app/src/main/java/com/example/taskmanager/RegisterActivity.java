@@ -2,6 +2,7 @@ package com.example.taskmanager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -27,32 +28,27 @@ public class RegisterActivity extends AppCompatActivity {
         if (!username.isEmpty() && !password.isEmpty()) {
             String sql = "select * from person where username = '" + username + "'";
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    SocketManager.send(sql);
-                }
-            }).start();
+            SocketManager.sendParallel(sql);
 
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    SocketManager.result = SocketManager.receive();
-                }
-            });
-            thread.start();
-            synchronized (SocketManager.lock) {
-                try {
-                    SocketManager.lock.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            SocketManager.receiveParallel();
+            String result = SocketManager.getResult();
+
+            if (!result.equals(" ")) {
+                Toast.makeText(this, "Пользователь с таким именем уже существует", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                sql = "insert into person (username, password) values ('" + username + "', '" + password + "')";
+
+                SocketManager.sendParallel(sql);
+
+                SocketManager.receiveParallel();
+                result = SocketManager.getResult();
+
+                if (result.equals("1")) {
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    startActivity(intent);
                 }
             }
-
-            String result = SocketManager.result;
-            Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
-
-
         } else {
             Toast.makeText(this, "Все поля должны быть заполнены", Toast.LENGTH_SHORT).show();
         }

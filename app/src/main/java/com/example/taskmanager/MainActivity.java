@@ -12,26 +12,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                SocketManager.connect("82.179.140.18", 45125);
-                SocketManager.receive();
-            }
-        }).start();
+        SocketManager.connectParallel("82.179.140.18", 45125);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                SocketManager.disconnect();
-            }
-        }).start();
+        SocketManager.disconnectParallel();
     }
 
     public void onClickOpenRegisterPage(View view) {
