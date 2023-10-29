@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.taskmanager.util.Hasher;
+import com.example.taskmanager.util.SocketManager;
+
 public class LoginActivity extends AppCompatActivity {
 
     private EditText editTextLoginUsername;
@@ -23,7 +26,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onClickLogin(View view) {
         String username = editTextLoginUsername.getText().toString().trim();
-        String password = editTextLoginPassword.getText().toString().trim();
+        String password = Hasher.hashPassword(editTextLoginPassword.getText().toString().trim());
         if (!username.isEmpty() && !password.isEmpty()) {
             String sql = "select * from person where username = '" + username + "'";
 

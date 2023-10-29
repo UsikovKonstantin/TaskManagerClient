@@ -7,6 +7,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.taskmanager.util.Hasher;
+import com.example.taskmanager.util.SocketManager;
+
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText editTextRegisterUsername;
@@ -16,13 +19,13 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        editTextRegisterUsername = findViewById(R.id.editTextRegisterUsername);
+        editTextRegisterUsername = findViewById(R.id.editTextDescription);
         editTextRegisterPassword = findViewById(R.id.editTextRegisterPassword);
     }
 
     public void onClickRegister(View view) {
         String username = editTextRegisterUsername.getText().toString().trim();
-        String password = editTextRegisterPassword.getText().toString().trim();
+        String password = Hasher.hashPassword(editTextRegisterPassword.getText().toString().trim());
         if (!username.isEmpty() && !password.isEmpty()) {
             String sql = "select * from person where username = '" + username + "'";
 

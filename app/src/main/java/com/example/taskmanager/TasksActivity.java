@@ -1,15 +1,17 @@
 package com.example.taskmanager;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.EditText;
-import android.widget.TextView;
+
+import com.example.taskmanager.util.SampleFragmentPagerAdapter;
+import com.example.taskmanager.util.SocketManager;
+import com.google.android.material.tabs.TabLayout;
 
 public class TasksActivity extends AppCompatActivity {
 
-    private TextView textViewTasks;
     private int id;
     private String username;
     private String password;
@@ -24,7 +26,6 @@ public class TasksActivity extends AppCompatActivity {
         username = intent.getStringExtra("username");
         password = intent.getStringExtra("password");
 
-        textViewTasks = findViewById(R.id.textViewTasks);
 
         String sql = "select * from task where person_id = " + id;
         SocketManager.sendParallel(sql);
@@ -41,6 +42,14 @@ public class TasksActivity extends AppCompatActivity {
             text += "\n";
         }
 
-        textViewTasks.setText(text);
+
+
+        // Получаем ViewPager и устанавливаем в него адаптер
+        ViewPager viewPager = findViewById(R.id.ViewPager);
+        viewPager.setAdapter(new SampleFragmentPagerAdapter(getSupportFragmentManager(), TasksActivity.this, id));
+
+        // Передаём ViewPager в TabLayout
+        TabLayout tabLayout = findViewById(R.id.TabLayout);
+        tabLayout.setupWithViewPager(viewPager);
     }
 }

@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.taskmanager.util.SocketManager;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override

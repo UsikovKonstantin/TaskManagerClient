@@ -6,14 +6,27 @@
     android:layout_height="match_parent"
     tools:context=".TasksActivity">
 
-    <TextView
-        android:id="@+id/textViewTasks"
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/TabLayout"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:contentDescription="TabLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tabMode="fixed" />
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/ViewPager"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="8dp"
-        android:textSize="20sp"
+        android:layout_weight="1"
+        android:background="@android:color/white"
+        android:contentDescription="ViewPager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/TabLayout" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
