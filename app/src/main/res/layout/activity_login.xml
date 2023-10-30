@@ -19,16 +19,17 @@
         app:layout_constraintVertical_bias="0.0">
 
         <TextView
-            android:id="@+id/textViewLogin"
+            android:id="@+id/textViewLoginHeader"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_margin="8dp"
             android:gravity="center"
             android:text="@string/enter"
-            android:textSize="34sp" />
+            android:textSize="34sp"
+            tools:ignore="TextSizeCheck" />
 
         <ImageView
-            android:id="@+id/imageViewLogin"
+            android:id="@+id/imageViewLoginLogo"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_margin="8dp"
@@ -57,7 +58,8 @@
             android:inputType="text"
             android:minHeight="50dp"
             android:textColorHint="#737373"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            tools:ignore="VisualLintTextFieldSize" />
 
         <TextView
             android:id="@+id/textViewLoginPassword"
@@ -80,7 +82,8 @@
             android:inputType="textPassword"
             android:minHeight="50dp"
             android:textColorHint="#737373"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            tools:ignore="VisualLintTextFieldSize" />
 
         <Button
             android:id="@+id/buttonLogin"

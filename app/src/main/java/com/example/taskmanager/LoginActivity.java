@@ -1,14 +1,12 @@
 package com.example.taskmanager;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import com.example.taskmanager.util.Hasher;
+import com.example.taskmanager.util.HashUtil;
 import com.example.taskmanager.util.SocketManager;
 
 public class LoginActivity extends AppCompatActivity {
@@ -26,34 +24,40 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onClickLogin(View view) {
         String username = editTextLoginUsername.getText().toString().trim();
-        String password = Hasher.hashPassword(editTextLoginPassword.getText().toString().trim());
+        String password = HashUtil.hashPassword(editTextLoginPassword.getText().toString().trim());
+
         if (!username.isEmpty() && !password.isEmpty()) {
             String sql = "select * from person where username = '" + username + "'";
 
-            SocketManager.sendParallel(sql);
+            if (!SocketManager.sendParallel(sql)) {
+                Toast.makeText(this, R.string.send_failed, Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            SocketManager.receiveParallel();
-            String result = SocketManager.getResult();
+            if (!SocketManager.receiveParallel()) {
+                Toast.makeText(this, R.string.receive_failed, Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            if (result.equals(" ")) {
-                Toast.makeText(this, "Пользователь не найден", Toast.LENGTH_SHORT).show();
+            String user = SocketManager.getResult();
+
+            if (user.equals(" ")) {
+                Toast.makeText(this, R.string.user_not_found, Toast.LENGTH_SHORT).show();
             }
             else {
-                String[] arr = result.split("\t");
+                String[] userData = user.split("\t");
 
-                if (arr[1].equals(username) && arr[2].equals(password)) {
+                if (userData[1].equals(username) && userData[2].equals(password)) {
                     Intent intent = new Intent(this, TasksActivity.class);
-                    intent.putExtra("id", Integer.parseInt(arr[0]));
-                    intent.putExtra("username", arr[1]);
-                    intent.putExtra("password", arr[2]);
+                    intent.putExtra("person_id", Integer.parseInt(userData[0]));
                     startActivity(intent);
                 }
                 else {
-                    Toast.makeText(this, "Неверный пароль", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.incorrect_password, Toast.LENGTH_SHORT).show();
                 }
             }
         } else {
-            Toast.makeText(this, "Все поля должны быть заполнены", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.empty_fields_error, Toast.LENGTH_SHORT).show();
         }
     }
 }

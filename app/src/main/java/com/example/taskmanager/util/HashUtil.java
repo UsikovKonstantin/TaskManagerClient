@@ -3,7 +3,7 @@ package com.example.taskmanager.util;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class Hasher {
+public class HashUtil {
     public static String hashPassword(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -15,7 +15,7 @@ public class Hasher {
             return sb.toString();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            return null;
+            return "";
         }
     }
 }

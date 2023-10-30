@@ -16,6 +16,7 @@ import com.example.taskmanager.util.TaskClickListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import de.codecrafters.tableview.TableView;
+import de.codecrafters.tableview.model.TableColumnWeightModel;
 import de.codecrafters.tableview.toolkit.SimpleTableDataAdapter;
 import de.codecrafters.tableview.toolkit.SimpleTableHeaderAdapter;
 
@@ -100,11 +101,22 @@ public class TasksFragment extends Fragment {
         listener.setPosition(position);
 
 
-        String[] headers = {"Название", "Описание", "Последний срок"};
+        String[] headers = {"Название", "Описание", "Cрок"};
         tableView.setColumnCount(headers.length);
 
 
-        tableView.setHeaderAdapter(new SimpleTableHeaderAdapter(context, headers));
-        tableView.setDataAdapter(new SimpleTableDataAdapter(context, data));
+        SimpleTableHeaderAdapter simpleTableHeaderAdapter = new SimpleTableHeaderAdapter(context, headers);
+        simpleTableHeaderAdapter.setTextSize(15);
+
+        tableView.setHeaderAdapter(simpleTableHeaderAdapter);
+
+        SimpleTableDataAdapter simpleTableDataAdapter = new SimpleTableDataAdapter(context, data);
+        simpleTableDataAdapter.setTextSize(10);
+
+        TableColumnWeightModel columnModel = new TableColumnWeightModel(headers.length);
+        columnModel.setColumnWeight(1, 2);
+        tableView.setColumnModel(columnModel);
+
+        tableView.setDataAdapter(simpleTableDataAdapter);
     }
 }

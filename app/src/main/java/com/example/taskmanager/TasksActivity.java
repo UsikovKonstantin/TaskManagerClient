@@ -12,7 +12,7 @@ import com.google.android.material.tabs.TabLayout;
 
 public class TasksActivity extends AppCompatActivity {
 
-    private int id;
+    private int person_id;
     private String username;
     private String password;
 
@@ -22,12 +22,10 @@ public class TasksActivity extends AppCompatActivity {
         setContentView(R.layout.activity_tasks);
 
         Intent intent = getIntent();
-        id = intent.getIntExtra("id", -1);
-        username = intent.getStringExtra("username");
-        password = intent.getStringExtra("password");
+        person_id = intent.getIntExtra("person_id", -1);
 
 
-        String sql = "select * from task where person_id = " + id;
+        String sql = "select * from task where person_id = " + person_id;
         SocketManager.sendParallel(sql);
         SocketManager.receiveParallel();
         String result = SocketManager.getResult();
@@ -46,7 +44,7 @@ public class TasksActivity extends AppCompatActivity {
 
         // Получаем ViewPager и устанавливаем в него адаптер
         ViewPager viewPager = findViewById(R.id.ViewPager);
-        viewPager.setAdapter(new SampleFragmentPagerAdapter(getSupportFragmentManager(), TasksActivity.this, id));
+        viewPager.setAdapter(new SampleFragmentPagerAdapter(getSupportFragmentManager(), TasksActivity.this, person_id));
 
         // Передаём ViewPager в TabLayout
         TabLayout tabLayout = findViewById(R.id.TabLayout);

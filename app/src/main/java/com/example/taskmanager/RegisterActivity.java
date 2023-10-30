@@ -6,8 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import com.example.taskmanager.util.Hasher;
+import com.example.taskmanager.util.HashUtil;
 import com.example.taskmanager.util.SocketManager;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -19,39 +18,57 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        editTextRegisterUsername = findViewById(R.id.editTextDescription);
+        editTextRegisterUsername = findViewById(R.id.editTextRegisterUsername);
         editTextRegisterPassword = findViewById(R.id.editTextRegisterPassword);
     }
 
     public void onClickRegister(View view) {
         String username = editTextRegisterUsername.getText().toString().trim();
-        String password = Hasher.hashPassword(editTextRegisterPassword.getText().toString().trim());
+        String password = HashUtil.hashPassword(editTextRegisterPassword.getText().toString().trim());
+
         if (!username.isEmpty() && !password.isEmpty()) {
-            String sql = "select * from person where username = '" + username + "'";
+            String sqlSelect = "select * from person where username = '" + username + "'";
 
-            SocketManager.sendParallel(sql);
+            if (!SocketManager.sendParallel(sqlSelect)) {
+                Toast.makeText(this, R.string.send_failed, Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            SocketManager.receiveParallel();
-            String result = SocketManager.getResult();
+            if (!SocketManager.receiveParallel()) {
+                Toast.makeText(this, R.string.receive_failed, Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            if (!result.equals(" ")) {
-                Toast.makeText(this, "Пользователь с таким именем уже существует", Toast.LENGTH_SHORT).show();
+            String user = SocketManager.getResult();
+
+            if (!user.equals(" ")) {
+                Toast.makeText(this, R.string.user_already_exists, Toast.LENGTH_SHORT).show();
             }
             else {
-                sql = "insert into person (username, password) values ('" + username + "', '" + password + "')";
+                String sqlInsert = "insert into person (username, password) values ('" + username + "', '" + password + "')";
 
-                SocketManager.sendParallel(sql);
+                if (!SocketManager.sendParallel(sqlInsert)) {
+                    Toast.makeText(this, R.string.send_failed, Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                SocketManager.receiveParallel();
-                result = SocketManager.getResult();
+                if (!SocketManager.receiveParallel()) {
+                    Toast.makeText(this, R.string.receive_failed, Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
+                String result = SocketManager.getResult();
                 if (result.equals("1")) {
                     Intent intent = new Intent(this, LoginActivity.class);
                     startActivity(intent);
                 }
+                else {
+                    Toast.makeText(this, R.string.add_user_failed, Toast.LENGTH_SHORT).show();
+                }
             }
-        } else {
-            Toast.makeText(this, "Все поля должны быть заполнены", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Toast.makeText(this, R.string.empty_fields_error, Toast.LENGTH_SHORT).show();
         }
     }
 }

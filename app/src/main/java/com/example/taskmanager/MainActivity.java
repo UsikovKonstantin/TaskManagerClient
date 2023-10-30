@@ -1,10 +1,10 @@
 package com.example.taskmanager;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.taskmanager.util.SocketManager;
 
@@ -14,21 +14,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        SocketManager.connectParallel("82.179.140.18", 45125);
+        if (!SocketManager.connectParallel("82.179.140.18", 45125)) {
+            Toast.makeText(this, R.string.connect_failed, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SocketManager.disconnectParallel();
+        if (!SocketManager.disconnectParallel()) {
+            Toast.makeText(this, R.string.disconnect_failed, Toast.LENGTH_SHORT).show();
+        }
     }
 
-    public void onClickOpenRegisterPage(View view) {
+    public void onClickOpenRegisterActivity(View view) {
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
     }
 
-    public void onClickOpenLoginPage(View view) {
+    public void onClickOpenLoginActivity(View view) {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }

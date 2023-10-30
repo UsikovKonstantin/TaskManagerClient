@@ -2,13 +2,11 @@ package com.example.taskmanager.util;
 
 import android.content.Context;
 import android.content.Intent;
-
-import com.example.taskmanager.AddTaskActivity;
 import com.example.taskmanager.EditTaskActivity;
 
 public class TaskClickListener implements de.codecrafters.tableview.listeners.TableDataClickListener {
 
-    private Context context;
+    private final Context context;
     private int[] ids;
     private int position;
 

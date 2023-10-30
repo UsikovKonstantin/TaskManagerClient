@@ -1,4 +1,5 @@
 package com.example.taskmanager.util;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -83,9 +84,7 @@ public class SocketManager {
     }
 
     public static boolean sendParallel(String message) {
-        Thread thread = new Thread(() -> {
-            send(message);
-        });
+        Thread thread = new Thread(() -> send(message));
         thread.start();
 
         try {

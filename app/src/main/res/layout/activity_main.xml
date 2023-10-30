@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="8dp"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -20,7 +19,7 @@
         app:layout_constraintVertical_bias="0.0">
 
         <TextView
-            android:id="@+id/textViewLogin"
+            android:id="@+id/textViewAppName"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_margin="8dp"
@@ -30,30 +29,30 @@
             android:textSize="24sp" />
 
         <ImageView
-            android:id="@+id/imageViewLogin"
+            android:id="@+id/imageViewAppLogo"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_margin="8dp"
             android:layout_weight="1"
             android:contentDescription="@string/app_logo"
-            app:srcCompat="@drawable/logo3" />
+            app:srcCompat="@drawable/logo" />
 
         <Button
-            android:id="@+id/buttonRegisterPage"
+            android:id="@+id/buttonOpenRegisterActivity"
             android:layout_width="250dp"
             android:layout_height="70dp"
             android:layout_margin="8dp"
             android:text="@string/register"
-            android:onClick="onClickOpenRegisterPage"/>
+            android:onClick="onClickOpenRegisterActivity"/>
 
         <Button
-            android:id="@+id/buttonLogin"
+            android:id="@+id/buttonOpenLoginActivity"
             android:layout_width="250dp"
             android:layout_height="70dp"
             android:layout_margin="8dp"
             android:layout_marginBottom="20dp"
             android:text="@string/login"
-            android:onClick="onClickOpenLoginPage"/>
+            android:onClick="onClickOpenLoginActivity"/>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
