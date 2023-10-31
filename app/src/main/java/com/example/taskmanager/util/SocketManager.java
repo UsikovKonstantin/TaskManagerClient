@@ -19,8 +19,8 @@ public class SocketManager {
                 inputStream = socket.getInputStream();
                 printWriter = new PrintWriter(socket.getOutputStream(), true);
                 connected = true;
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            } catch (IOException ignored) {
+
             }
         }
     }
@@ -34,8 +34,8 @@ public class SocketManager {
 
         try {
             thread.join(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        } catch (InterruptedException ignored) {
+
         }
         if (thread.isAlive()) {
             thread.interrupt();
@@ -53,8 +53,8 @@ public class SocketManager {
                 inputStream.close();
                 printWriter.close();
                 connected = false;
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            } catch (IOException ignored) {
+
             }
         }
     }
@@ -65,8 +65,8 @@ public class SocketManager {
 
         try {
             thread.join(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        } catch (InterruptedException ignored) {
+
         }
         if (thread.isAlive()) {
             thread.interrupt();
@@ -89,8 +89,8 @@ public class SocketManager {
 
         try {
             thread.join(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        } catch (InterruptedException ignored) {
+
         }
         if (thread.isAlive()) {
             thread.interrupt();
@@ -107,8 +107,8 @@ public class SocketManager {
                 byte[] buffer = new byte[1024];
                 int bytesRead = inputStream.read(buffer);
                 result = new String(buffer, 0, bytesRead);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            } catch (IOException ignored) {
+
             }
         }
     }
@@ -119,8 +119,8 @@ public class SocketManager {
 
         try {
             thread.join(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        } catch (InterruptedException ignored) {
+
         }
         if (thread.isAlive()) {
             thread.interrupt();
