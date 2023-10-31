@@ -19,7 +19,7 @@ public class SocketManager {
                 inputStream = socket.getInputStream();
                 printWriter = new PrintWriter(socket.getOutputStream(), true);
                 connected = true;
-            } catch (IOException ignored) {
+            } catch (IOException exception) {
 
             }
         }
@@ -34,16 +34,11 @@ public class SocketManager {
 
         try {
             thread.join(1000);
-        } catch (InterruptedException ignored) {
-
-        }
-        if (thread.isAlive()) {
+        } catch (InterruptedException exception) {
             thread.interrupt();
-            return false;
         }
-        else {
-            return true;
-        }
+
+        return connected;
     }
 
     public static void disconnect() {
@@ -65,15 +60,10 @@ public class SocketManager {
 
         try {
             thread.join(1000);
-        } catch (InterruptedException ignored) {
-
-        }
-        if (thread.isAlive()) {
+            return true;
+        } catch (InterruptedException exception) {
             thread.interrupt();
             return false;
-        }
-        else {
-            return true;
         }
     }
 
@@ -84,20 +74,19 @@ public class SocketManager {
     }
 
     public static boolean sendParallel(String message) {
-        Thread thread = new Thread(() -> send(message));
-        thread.start();
+        if (connected) {
+            Thread thread = new Thread(() -> send(message));
+            thread.start();
 
-        try {
-            thread.join(1000);
-        } catch (InterruptedException ignored) {
-
-        }
-        if (thread.isAlive()) {
-            thread.interrupt();
+            try {
+                thread.join(1000);
+                return true;
+            } catch (InterruptedException exception) {
+                thread.interrupt();
+                return false;
+            }
+        } else {
             return false;
-        }
-        else {
-            return true;
         }
     }
 
@@ -114,20 +103,19 @@ public class SocketManager {
     }
 
     public static boolean receiveParallel() {
-        Thread thread = new Thread(SocketManager::receive);
-        thread.start();
+        if (connected) {
+            Thread thread = new Thread(SocketManager::receive);
+            thread.start();
 
-        try {
-            thread.join(1000);
-        } catch (InterruptedException ignored) {
-
-        }
-        if (thread.isAlive()) {
-            thread.interrupt();
+            try {
+                thread.join(1000);
+                return true;
+            } catch (InterruptedException exception) {
+                thread.interrupt();
+                return false;
+            }
+        } else {
             return false;
-        }
-        else {
-            return true;
         }
     }
 
