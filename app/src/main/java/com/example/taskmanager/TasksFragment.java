@@ -13,6 +13,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.example.taskmanager.util.SocketManager;
 import com.example.taskmanager.util.TaskClickListener;
+
+import java.util.Arrays;
+
 import de.codecrafters.tableview.TableView;
 import de.codecrafters.tableview.model.TableColumnWeightModel;
 import de.codecrafters.tableview.toolkit.SimpleTableDataAdapter;
@@ -90,14 +93,14 @@ public class TasksFragment extends Fragment {
         }
 
         String result = SocketManager.getResult();
-        String[] rows = result.split("\n");
+        String[] rows = Arrays.stream(result.trim().split("\n"))
+                .filter(s -> !s.isEmpty()).toArray(String[]::new);
         String[][] data = new String[rows.length][];
         int[] ids = new int[rows.length];
         for (int i = 0; i < rows.length; i++) {
             String[] rowData = rows[i].split("\t");
             data[i] = new String[] { rowData[1], rowData[2], rowData[3] };
-            if (!rowData[0].equals(" "))
-                ids[i] = Integer.parseInt(rowData[0]);
+            ids[i] = Integer.parseInt(rowData[0]);
         }
 
         listener.setIds(ids);
