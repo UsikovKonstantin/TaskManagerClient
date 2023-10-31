@@ -5,15 +5,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".TasksFragment"
+    android:gravity="center"
     android:orientation="vertical">
-
-<!--    <TableLayout-->
-<!--        android:id="@+id/tableLayout"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:stretchColumns="1">-->
-<!--    </TableLayout>-->
-
 
     <de.codecrafters.tableview.TableView
         android:id="@+id/tableView"
@@ -23,11 +16,10 @@
         android:layout_weight="1"/>
 
     <Button
-        android:id="@+id/buttonAddTask"
-        android:layout_width="match_parent"
+        android:id="@+id/buttonOpenAddTaskActivity"
+        android:layout_width="250dp"
         android:layout_height="50dp"
         android:layout_margin="8dp"
         android:text="@string/add_task" />
-
 
 </LinearLayout>

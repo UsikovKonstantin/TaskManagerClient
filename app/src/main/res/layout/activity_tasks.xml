@@ -11,19 +11,19 @@
         android:id="@+id/TabLayout"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:contentDescription="TabLayout"
+        android:contentDescription="@string/tab_names"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tabMode="fixed" />
 
     <androidx.viewpager.widget.ViewPager
-        android:id="@+id/ViewPager"
+        android:id="@+id/ViewPagerFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="@android:color/white"
-        android:contentDescription="ViewPager"
+        android:contentDescription="@string/table_data"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

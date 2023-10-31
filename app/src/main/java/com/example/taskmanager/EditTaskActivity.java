@@ -1,32 +1,24 @@
 package com.example.taskmanager;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.example.taskmanager.util.SocketManager;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 
 public class EditTaskActivity extends AppCompatActivity {
 
-    private int id;
-    private String name;
-    private String description;
-    private String end_at;
+    private int task_id;
     private EditText editTextName;
     private EditText editTextDescription;
     private EditText editTextDate;
-    private Button buttonCompleteTask;
     private int position;
 
     @Override
@@ -34,29 +26,22 @@ public class EditTaskActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_task);
 
-        Intent intent = getIntent();
-        id = intent.getIntExtra("id", -1);
-        name = intent.getStringExtra("name");
-        description = intent.getStringExtra("description");
-        end_at = intent.getStringExtra("end_at");
-        position = intent.getIntExtra("position", -1);
+        editTextName = findViewById(R.id.editTextEditTaskName);
+        editTextDescription = findViewById(R.id.editTextEditTaskDescription);
+        editTextDate = findViewById(R.id.editTextEditTaskDate);
+        Button buttonCompleteTask = findViewById(R.id.buttonCompleteTask);
 
-        editTextName = findViewById(R.id.editTextName);
-        editTextDescription = findViewById(R.id.editTextDescription);
-        editTextDate = findViewById(R.id.editTextDate);
-        buttonCompleteTask = findViewById(R.id.buttonCompleteTask);
+        Intent intent = getIntent();
+        task_id = intent.getIntExtra("task_id", -1);
+        String name = intent.getStringExtra("name");
+        String description = intent.getStringExtra("description");
+        String end_at = intent.getStringExtra("end_at");
+        position = intent.getIntExtra("position", -1);
 
         editTextName.setText(name);
         editTextDescription.setText(description);
         editTextDate.setText(end_at);
-
-        if (position == 0) {
-            buttonCompleteTask.setText("Выполнить задачу");
-        } else {
-            buttonCompleteTask.setText("Снять выполнение");
-        }
-
-        System.out.println(id);
+        buttonCompleteTask.setText(position == 0 ? "Выполнить задачу" : "Снять выполнение");
     }
 
     public void onClickOpenCalendar(View view) {
@@ -65,11 +50,9 @@ public class EditTaskActivity extends AppCompatActivity {
         int month = c.get(Calendar.MONTH);
         int year = c.get(Calendar.YEAR);
 
-        DatePickerDialog dpd = new DatePickerDialog(view.getContext(), new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                editTextDate.setText(year + "-" + month + "-" + dayOfMonth);
-            }
+        DatePickerDialog dpd = new DatePickerDialog(view.getContext(), (viewDp, yearDp, monthDp, dayDp) -> {
+            String text = yearDp + "-" + monthDp + "-" + dayDp;
+            editTextDate.setText(text);
         }, year, month, day);
         dpd.show();
     }
@@ -80,58 +63,76 @@ public class EditTaskActivity extends AppCompatActivity {
         String end_at = editTextDate.getText().toString().trim();
 
         if (!name.isEmpty() && !end_at.isEmpty()) {
-            String sql = "update task set name = '" + name + "', description = '" + description + "', end_at = '" + end_at + "' where id = " + id;
+            String sql = "update task set name = '" + name + "', description = '" + description + "', end_at = '" + end_at + "' where id = " + task_id;
 
-            SocketManager.sendParallel(sql);
+            if (!SocketManager.sendParallel(sql)) {
+                Toast.makeText(this, R.string.send_failed, Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            SocketManager.receiveParallel();
+            if (!SocketManager.receiveParallel()) {
+                Toast.makeText(this, R.string.receive_failed, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             String result = SocketManager.getResult();
-
             if (!result.equals("1")) {
-                Toast.makeText(this, "Не удалось изменить задачу", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.edit_task_failed, Toast.LENGTH_SHORT).show();
             }
             else {
                 finish();
             }
         } else {
-            Toast.makeText(this, "Все поля должны быть заполнены", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.empty_fields_add_error, Toast.LENGTH_SHORT).show();
         }
     }
 
     public void onClickCompleteTask(View view) {
         LocalDate currentDate = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String formattedDate = currentDate.format(formatter);
+        String date = currentDate.format(formatter);
 
         String sql;
         if (position == 0) {
-            sql = "update task set done_at = '" + formattedDate + "' where id = " + id;
+            sql = "update task set done_at = '" + date + "' where id = " + task_id;
         } else {
-            sql = "update task set done_at = null where id = " + id;
+            sql = "update task set done_at = null where id = " + task_id;
         }
 
-        SocketManager.sendParallel(sql);
+        if (!SocketManager.sendParallel(sql)) {
+            Toast.makeText(this, R.string.send_failed, Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        SocketManager.receiveParallel();
+        if (!SocketManager.receiveParallel()) {
+            Toast.makeText(this, R.string.receive_failed, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String result = SocketManager.getResult();
-
         if (!result.equals("1")) {
-            Toast.makeText(this, "Не удалось изменить задачу", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.edit_task_failed, Toast.LENGTH_SHORT).show();
         } else {
             finish();
         }
     }
 
     public void onClickDeleteTask(View view) {
-        String sql = "delete from task where id = " + id;
+        String sql = "delete from task where id = " + task_id;
 
-        SocketManager.sendParallel(sql);
+        if (!SocketManager.sendParallel(sql)) {
+            Toast.makeText(this, R.string.send_failed, Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        SocketManager.receiveParallel();
+        if (!SocketManager.receiveParallel()) {
+            Toast.makeText(this, R.string.receive_failed, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String result = SocketManager.getResult();
-
         if (!result.equals("1")) {
-            Toast.makeText(this, "Не удалось удалить задачу", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.delete_task_failed, Toast.LENGTH_SHORT).show();
         } else {
             finish();
         }

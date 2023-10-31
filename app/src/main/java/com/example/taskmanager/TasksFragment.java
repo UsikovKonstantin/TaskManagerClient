@@ -7,14 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TableLayout;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.example.taskmanager.util.SocketManager;
 import com.example.taskmanager.util.TaskClickListener;
-import java.util.ArrayList;
-import java.util.Arrays;
 import de.codecrafters.tableview.TableView;
 import de.codecrafters.tableview.model.TableColumnWeightModel;
 import de.codecrafters.tableview.toolkit.SimpleTableDataAdapter;
@@ -22,7 +20,7 @@ import de.codecrafters.tableview.toolkit.SimpleTableHeaderAdapter;
 
 public class TasksFragment extends Fragment {
 
-    private TableLayout tableLayout;
+    private final String[] headers = { "Название", "Описание", "Cрок" };
     private TableView tableView;
     private Context context;
     private int position;
@@ -41,7 +39,7 @@ public class TasksFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        UpdateTableView();
+        UpdateView();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -49,10 +47,10 @@ public class TasksFragment extends Fragment {
 
         context = view.getContext();
         tableView = view.findViewById(R.id.tableView);
-        buttonAddTask = view.findViewById(R.id.buttonAddTask);
+        buttonAddTask = view.findViewById(R.id.buttonOpenAddTaskActivity);
         listener = new TaskClickListener(context);
         tableView.addDataClickListener(listener);
-        UpdateTableView();
+        UpdateView();
 
         return view;
     }
@@ -60,63 +58,63 @@ public class TasksFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        View v = view.findViewById(R.id.buttonAddTask);
+        View v = view.findViewById(R.id.buttonOpenAddTaskActivity);
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(view.getContext(), AddTaskActivity.class);
-                intent.putExtra("id", person_id);
+                intent.putExtra("person_id", person_id);
                 startActivity(intent);
             }
         });
     }
 
-    public void UpdateTableView() {
+    public void UpdateView() {
         String sql;
         if (position == 0) {
             buttonAddTask.setVisibility(View.VISIBLE);
-            sql = "select id, name, description, end_at from task where person_id = " + person_id + " and done_at is null";
+            sql = "select id, name, description, end_at from task where person_id = " + person_id + " and done_at is null order by end_at";
         } else {
             buttonAddTask.setVisibility(View.GONE);
-            sql = "select id, name, description, end_at from task where person_id = " + person_id + " and done_at is not null";
+            sql = "select id, name, description, end_at from task where person_id = " + person_id + " and done_at is not null order by end_at";
         }
-        SocketManager.sendParallel(sql);
-        SocketManager.receiveParallel();
-        String result = SocketManager.getResult();
 
+        if (!SocketManager.sendParallel(sql)) {
+            Toast.makeText(context, R.string.send_failed, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!SocketManager.receiveParallel()) {
+            Toast.makeText(context, R.string.receive_failed, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String result = SocketManager.getResult();
         String[] rows = result.split("\n");
         String[][] data = new String[rows.length][];
-        ArrayList<Integer> ids = new ArrayList<Integer>();
+        int[] ids = new int[rows.length];
         for (int i = 0; i < rows.length; i++) {
-            data[i] = Arrays.stream(rows[i].split("\t")).skip(1).toArray(String[]::new);
-            if (!rows[i].split("\t")[0].equals(" "))
-                ids.add(Integer.parseInt(rows[i].split("\t")[0]));
+            String[] rowData = rows[i].split("\t");
+            data[i] = new String[] { rowData[1], rowData[2], rowData[3] };
+            if (!rowData[0].equals(" "))
+                ids[i] = Integer.parseInt(rowData[0]);
         }
 
-        int[] arr = new int[ids.size()];
-        for (int i = 0; i < ids.size(); i++) {
-            arr[i] = ids.get(i);
-        }
-        listener.setIds(arr);
+        listener.setIds(ids);
         listener.setPosition(position);
 
-
-        String[] headers = {"Название", "Описание", "Cрок"};
         tableView.setColumnCount(headers.length);
-
 
         SimpleTableHeaderAdapter simpleTableHeaderAdapter = new SimpleTableHeaderAdapter(context, headers);
         simpleTableHeaderAdapter.setTextSize(15);
-
         tableView.setHeaderAdapter(simpleTableHeaderAdapter);
-
-        SimpleTableDataAdapter simpleTableDataAdapter = new SimpleTableDataAdapter(context, data);
-        simpleTableDataAdapter.setTextSize(10);
 
         TableColumnWeightModel columnModel = new TableColumnWeightModel(headers.length);
         columnModel.setColumnWeight(1, 2);
         tableView.setColumnModel(columnModel);
 
+        SimpleTableDataAdapter simpleTableDataAdapter = new SimpleTableDataAdapter(context, data);
+        simpleTableDataAdapter.setTextSize(10);
         tableView.setDataAdapter(simpleTableDataAdapter);
     }
 }

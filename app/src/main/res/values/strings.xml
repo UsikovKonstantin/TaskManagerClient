@@ -21,4 +21,23 @@
     <string name="empty_fields_error">Все поля должны быть заполнены</string>
     <string name="user_not_found">Пользователь не найден</string>
     <string name="incorrect_password">Неверный пароль</string>
+    <string name="tab_names">Названия вкладок</string>
+    <string name="table_data">Таблица</string>
+    <string name="task_name">Название задачи</string>
+    <string name="enter_task_name">Ввведите название задачи</string>
+    <string name="task_description">Описание задачи</string>
+    <string name="enter_task_description">Введите описание задачи</string>
+    <string name="task_end_date">Последний срок выполнения</string>
+    <string name="date">Дата</string>
+    <string name="enter_date">Выбрать дату</string>
+    <string name="empty_fields_add_error">Поля \'Название\' и \'Дата\' должны быть заполнены</string>
+    <string name="add_task_failed">Не удалось добавить новую задачу</string>
+    <string name="task_added">Задача добавлена</string>
+    <string name="edit_task">Изменить задачу</string>
+    <string name="complete_task">Выполнить задачу</string>
+    <string name="delete_task">Удалить задачу</string>
+    <string name="edit_task_failed">Не удалось изменить задачу</string>
+    <string name="task_edited">Задача изменена</string>
+    <string name="delete_task_failed">Не удалось удалить задачу</string>
+    <string name="task_deleted">Задача удалена</string>
 </resources>

@@ -19,68 +19,71 @@
         app:layout_constraintVertical_bias="0.0">
 
         <TextView
-            android:id="@+id/textViewAddTask"
+            android:id="@+id/textViewAddTaskHeader"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_margin="8dp"
             android:gravity="center"
             android:text="@string/add_task"
-            android:textSize="34sp" />
+            android:textSize="34sp"
+            tools:ignore="TextSizeCheck" />
 
         <TextView
-            android:id="@+id/textViewName"
+            android:id="@+id/textViewAddTaskName"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_margin="8dp"
             android:gravity="center_vertical"
             android:minHeight="40dp"
-            android:text="Название задачи"
+            android:text="@string/task_name"
             android:textSize="20sp" />
 
         <EditText
-            android:id="@+id/editTextName"
+            android:id="@+id/editTextAddTaskName"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_margin="8dp"
             android:autofillHints="username"
             android:ems="10"
-            android:hint="Ввведите название задачи"
+            android:hint="@string/enter_task_name"
             android:inputType="text"
             android:minHeight="50dp"
             android:textColorHint="#737373"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            tools:ignore="VisualLintTextFieldSize" />
 
         <TextView
-            android:id="@+id/textViewDescription"
+            android:id="@+id/textViewAddTaskDescription"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_margin="8dp"
             android:gravity="center_vertical"
             android:minHeight="40dp"
-            android:text="Описание задачи"
+            android:text="@string/task_description"
             android:textSize="20sp" />
 
         <EditText
-            android:id="@+id/editTextDescription"
+            android:id="@+id/editTextAddTaskDescription"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_margin="8dp"
             android:autofillHints="username"
             android:ems="10"
-            android:hint="Введите описание задачи"
+            android:hint="@string/enter_task_description"
             android:inputType="text"
             android:minHeight="50dp"
             android:textColorHint="#737373"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            tools:ignore="VisualLintTextFieldSize" />
 
         <TextView
-            android:id="@+id/textViewDate"
+            android:id="@+id/textViewAddTaskEndDate"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_margin="8dp"
             android:gravity="center_vertical"
             android:minHeight="40dp"
-            android:text="Последний срок выполнения"
+            android:text="@string/task_end_date"
             android:textSize="20sp" />
 
         <LinearLayout
@@ -90,34 +93,37 @@
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/editTextDate"
-                android:layout_width="wrap_content"
+                android:id="@+id/editTextAddTaskEndDate"
+                android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
                 android:autofillHints="username"
                 android:ems="10"
                 android:enabled="false"
-                android:hint="Дата"
+                android:inputType="text"
+                android:hint="@string/date"
                 android:minHeight="50dp"
                 android:textColorHint="#737373"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                tools:ignore="TextFields,VisualLintTextFieldSize" />
 
             <Button
-                android:id="@+id/buttonDate"
+                android:id="@+id/buttonPickDateAdd"
                 android:layout_width="150dp"
                 android:layout_height="50dp"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
                 android:onClick="onClickOpenCalendar"
-                android:text="Выбрать дату" />
+                android:text="@string/enter_date" />
         </LinearLayout>
 
         <Button
-            android:id="@+id/buttonLogin"
+            android:id="@+id/buttonAddTask"
             android:layout_width="250dp"
             android:layout_height="70dp"
-            android:layout_margin="8dp"
+            android:layout_margin="20dp"
             android:onClick="onClickAddTask"
-            android:text="Добавить задачу" />
+            android:text="@string/add_task"
+            tools:ignore="DuplicateSpeakableTextCheck" />
 
     </LinearLayout>
 

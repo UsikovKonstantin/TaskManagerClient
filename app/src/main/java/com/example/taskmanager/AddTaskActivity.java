@@ -1,23 +1,14 @@
 package com.example.taskmanager;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.example.taskmanager.util.SocketManager;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 public class AddTaskActivity extends AppCompatActivity {
 
@@ -32,61 +23,55 @@ public class AddTaskActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_task);
 
         Intent intent = getIntent();
-        person_id = intent.getIntExtra("id", -1);
+        person_id = intent.getIntExtra("person_id", -1);
 
-        editTextName = findViewById(R.id.editTextName);
-        editTextDescription = findViewById(R.id.editTextDescription);
-        editTextDate = findViewById(R.id.editTextDate);
+        editTextName = findViewById(R.id.editTextAddTaskName);
+        editTextDescription = findViewById(R.id.editTextAddTaskDescription);
+        editTextDate = findViewById(R.id.editTextAddTaskEndDate);
     }
 
-
     public void onClickOpenCalendar(View view) {
-        View v = findViewById(R.id.editTextDate);
-
         Calendar c = Calendar.getInstance();
         int day = c.get(Calendar.DAY_OF_MONTH);
         int month = c.get(Calendar.MONTH);
         int year = c.get(Calendar.YEAR);
 
-        DatePickerDialog dpd = new DatePickerDialog(view.getContext(), new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                ((EditText)v).setText(dayOfMonth + "/" + month + "/" + year);
-            }
+        DatePickerDialog dpd = new DatePickerDialog(view.getContext(), (viewDp, yearDp, monthDp, dayDp) -> {
+            String text = yearDp + "-" + monthDp + "-" + dayDp;
+            editTextDate.setText(text);
         }, year, month, day);
         dpd.show();
-
     }
 
     public void onClickAddTask(View view) {
         String name = editTextName.getText().toString().trim();
         String description = editTextDescription.getText().toString().trim();
-        String dateStr = editTextDate.getText().toString().trim();
-        Date date;
-        try {
-            date = (new SimpleDateFormat("dd/MM/yyyy")).parse(dateStr);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+        String date = editTextDate.getText().toString().trim();
 
+        if (!name.isEmpty() && !date.isEmpty()) {
+            String sql = "insert into task(person_id, name, description, end_at, done_at) values (" +
+                    person_id + ", '" + name + "', '" + description + "', '" + date + "', null)";
 
-        if (!name.isEmpty() && !dateStr.isEmpty()) {
-            String sql = "insert into task(person_id, name, description, end_at, done_at) values (" + person_id + ", '" +
-                    name + "', '" + description + "', '" + (new SimpleDateFormat("yyyy-MM-dd")).format(date) + "', null);";
+            if (!SocketManager.sendParallel(sql)) {
+                Toast.makeText(this, R.string.send_failed, Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            SocketManager.sendParallel(sql);
+            if (!SocketManager.receiveParallel()) {
+                Toast.makeText(this, R.string.receive_failed, Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            SocketManager.receiveParallel();
             String result = SocketManager.getResult();
-
             if (!result.equals("1")) {
-                Toast.makeText(this, "Не удалось добавить задачу", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.add_task_failed, Toast.LENGTH_SHORT).show();
             }
             else {
+                Toast.makeText(this, R.string.task_added, Toast.LENGTH_SHORT).show();
                 finish();
             }
         } else {
-            Toast.makeText(this, "Поля 'Название' и 'Дата' должны быть заполнены", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.empty_fields_add_error, Toast.LENGTH_SHORT).show();
         }
     }
 }

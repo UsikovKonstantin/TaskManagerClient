@@ -14,7 +14,7 @@ public class TaskClickListener implements de.codecrafters.tableview.listeners.Ta
     public void onDataClicked(int rowIndex, Object clickedData) {
         String[] data = (String[])clickedData;
         Intent intent = new Intent(context, EditTaskActivity.class);
-        intent.putExtra("id", ids[rowIndex]);
+        intent.putExtra("task_id", ids[rowIndex]);
         intent.putExtra("name", data[0]);
         intent.putExtra("description", data[1]);
         intent.putExtra("end_at", data[2]);
