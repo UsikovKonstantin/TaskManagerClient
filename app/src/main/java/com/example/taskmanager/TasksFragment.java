@@ -82,6 +82,13 @@ public class TasksFragment extends Fragment {
             queryFindTasks = "FindDoneTasksByPersonId" + "\n" + person_id;
         }
 
+        if (!SocketManager.isConnected()) {
+            if (!SocketManager.connectParallel("82.179.140.18", 45125)) {
+                Toast.makeText(context, R.string.connect_failed, Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
         if (!SocketManager.sendParallel(queryFindTasks)) {
             Toast.makeText(context, R.string.send_failed, Toast.LENGTH_SHORT).show();
             return;

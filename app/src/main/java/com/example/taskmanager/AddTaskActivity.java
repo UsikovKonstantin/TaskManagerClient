@@ -51,6 +51,13 @@ public class AddTaskActivity extends AppCompatActivity {
         if (!name.isEmpty() && !date.isEmpty()) {
             String queryAddTask = "AddTask" + "\n" + person_id + "\n" + name + "\n" + description + "\n" + date;
 
+            if (!SocketManager.isConnected()) {
+                if (!SocketManager.connectParallel("82.179.140.18", 45125)) {
+                    Toast.makeText(this, R.string.connect_failed, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
             if (!SocketManager.sendParallel(queryAddTask)) {
                 Toast.makeText(this, R.string.send_failed, Toast.LENGTH_SHORT).show();
                 return;

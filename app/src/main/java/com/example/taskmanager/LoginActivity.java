@@ -29,6 +29,13 @@ public class LoginActivity extends AppCompatActivity {
         if (!username.isEmpty() && !password.isEmpty()) {
             String queryFindPerson = "FindPersonByUsername" + "\n" + username;
 
+            if (!SocketManager.isConnected()) {
+                if (!SocketManager.connectParallel("82.179.140.18", 45125)) {
+                    Toast.makeText(this, R.string.connect_failed, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
             if (!SocketManager.sendParallel(queryFindPerson)) {
                 Toast.makeText(this, R.string.send_failed, Toast.LENGTH_SHORT).show();
                 return;

@@ -33,7 +33,7 @@ public class SocketManager {
         thread.start();
 
         try {
-            thread.join(1000);
+            thread.join(100);
         } catch (InterruptedException exception) {
             thread.interrupt();
         }
@@ -59,7 +59,7 @@ public class SocketManager {
         thread.start();
 
         try {
-            thread.join(1000);
+            thread.join(100);
             return true;
         } catch (InterruptedException exception) {
             thread.interrupt();
@@ -121,6 +121,10 @@ public class SocketManager {
 
     public static String getResult() {
         return result;
+    }
+
+    public static boolean isConnected() {
+        return connected;
     }
 }
 
