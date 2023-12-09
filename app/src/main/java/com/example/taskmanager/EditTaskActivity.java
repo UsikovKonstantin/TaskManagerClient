@@ -51,7 +51,7 @@ public class EditTaskActivity extends AppCompatActivity {
         int year = c.get(Calendar.YEAR);
 
         DatePickerDialog dpd = new DatePickerDialog(view.getContext(), (viewDp, yearDp, monthDp, dayDp) -> {
-            String text = yearDp + "-" + monthDp + "-" + dayDp;
+            String text = yearDp + "-" + (monthDp + 1) + "-" + dayDp;
             editTextDate.setText(text);
         }, year, month, day);
         dpd.show();
@@ -63,9 +63,9 @@ public class EditTaskActivity extends AppCompatActivity {
         String end_at = editTextDate.getText().toString().trim();
 
         if (!name.isEmpty() && !end_at.isEmpty()) {
-            String sql = "update task set name = '" + name + "', description = '" + description + "', end_at = '" + end_at + "' where id = " + task_id;
+            String queryUpdateTask = "UpdateTask" + "\n" + task_id + "\n" + name + "\n" + description + "\n" + end_at;
 
-            if (!SocketManager.sendParallel(sql)) {
+            if (!SocketManager.sendParallel(queryUpdateTask)) {
                 Toast.makeText(this, R.string.send_failed, Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -92,14 +92,14 @@ public class EditTaskActivity extends AppCompatActivity {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String date = currentDate.format(formatter);
 
-        String sql;
+        String queryUpdateTaskDoneAt;
         if (position == 0) {
-            sql = "update task set done_at = '" + date + "' where id = " + task_id;
+            queryUpdateTaskDoneAt = "UpdateTaskDoneAt" + "\n" + task_id + "\n" + date;
         } else {
-            sql = "update task set done_at = null where id = " + task_id;
+            queryUpdateTaskDoneAt = "UpdateTaskNotDone" + "\n" + task_id;
         }
 
-        if (!SocketManager.sendParallel(sql)) {
+        if (!SocketManager.sendParallel(queryUpdateTaskDoneAt)) {
             Toast.makeText(this, R.string.send_failed, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -118,9 +118,9 @@ public class EditTaskActivity extends AppCompatActivity {
     }
 
     public void onClickDeleteTask(View view) {
-        String sql = "delete from task where id = " + task_id;
+        String queryDelete = "DeleteTask" + "\n" + task_id;
 
-        if (!SocketManager.sendParallel(sql)) {
+        if (!SocketManager.sendParallel(queryDelete)) {
             Toast.makeText(this, R.string.send_failed, Toast.LENGTH_SHORT).show();
             return;
         }

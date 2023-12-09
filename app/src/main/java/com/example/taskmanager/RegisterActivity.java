@@ -27,9 +27,10 @@ public class RegisterActivity extends AppCompatActivity {
         String password = HashUtil.hashPassword(editTextRegisterPassword.getText().toString().trim());
 
         if (!username.isEmpty() && !password.isEmpty()) {
-            String sqlSelect = "select * from person where username = '" + username + "'";
+            String queryFindPerson = "FindPersonByUsername" + "\n" + username;
+            System.out.println(queryFindPerson);
 
-            if (!SocketManager.sendParallel(sqlSelect)) {
+            if (!SocketManager.sendParallel(queryFindPerson)) {
                 Toast.makeText(this, R.string.send_failed, Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -40,14 +41,15 @@ public class RegisterActivity extends AppCompatActivity {
             }
 
             String user = SocketManager.getResult();
+            System.out.println(user);
 
             if (!user.equals(" ")) {
                 Toast.makeText(this, R.string.user_already_exists, Toast.LENGTH_SHORT).show();
             }
             else {
-                String sqlInsert = "insert into person (username, password) values ('" + username + "', '" + password + "')";
+                String queryAddPerson = "AddPerson" + "\n" + username + "\n" + password;
 
-                if (!SocketManager.sendParallel(sqlInsert)) {
+                if (!SocketManager.sendParallel(queryAddPerson)) {
                     Toast.makeText(this, R.string.send_failed, Toast.LENGTH_SHORT).show();
                     return;
                 }

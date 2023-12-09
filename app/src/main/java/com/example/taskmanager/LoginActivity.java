@@ -27,9 +27,9 @@ public class LoginActivity extends AppCompatActivity {
         String password = HashUtil.hashPassword(editTextLoginPassword.getText().toString().trim());
 
         if (!username.isEmpty() && !password.isEmpty()) {
-            String sql = "select * from person where username = '" + username + "'";
+            String queryFindPerson = "FindPersonByUsername" + "\n" + username;
 
-            if (!SocketManager.sendParallel(sql)) {
+            if (!SocketManager.sendParallel(queryFindPerson)) {
                 Toast.makeText(this, R.string.send_failed, Toast.LENGTH_SHORT).show();
                 return;
             }

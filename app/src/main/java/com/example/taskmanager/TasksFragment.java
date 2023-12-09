@@ -73,16 +73,16 @@ public class TasksFragment extends Fragment {
     }
 
     public void UpdateView() {
-        String sql;
+        String queryFindTasks;
         if (position == 0) {
             buttonAddTask.setVisibility(View.VISIBLE);
-            sql = "select id, name, description, end_at from task where person_id = " + person_id + " and done_at is null order by end_at";
+            queryFindTasks = "FindNotDoneTasksByPersonId" + "\n" + person_id;
         } else {
             buttonAddTask.setVisibility(View.GONE);
-            sql = "select id, name, description, end_at from task where person_id = " + person_id + " and done_at is not null order by end_at";
+            queryFindTasks = "FindDoneTasksByPersonId" + "\n" + person_id;
         }
 
-        if (!SocketManager.sendParallel(sql)) {
+        if (!SocketManager.sendParallel(queryFindTasks)) {
             Toast.makeText(context, R.string.send_failed, Toast.LENGTH_SHORT).show();
             return;
         }

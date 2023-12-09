@@ -37,7 +37,7 @@ public class AddTaskActivity extends AppCompatActivity {
         int year = c.get(Calendar.YEAR);
 
         DatePickerDialog dpd = new DatePickerDialog(view.getContext(), (viewDp, yearDp, monthDp, dayDp) -> {
-            String text = yearDp + "-" + monthDp + "-" + dayDp;
+            String text = yearDp + "-" + (monthDp + 1) + "-" + dayDp;
             editTextDate.setText(text);
         }, year, month, day);
         dpd.show();
@@ -49,10 +49,9 @@ public class AddTaskActivity extends AppCompatActivity {
         String date = editTextDate.getText().toString().trim();
 
         if (!name.isEmpty() && !date.isEmpty()) {
-            String sql = "insert into task(person_id, name, description, end_at, done_at) values (" +
-                    person_id + ", '" + name + "', '" + description + "', '" + date + "', null)";
+            String queryAddTask = "AddTask" + "\n" + person_id + "\n" + name + "\n" + description + "\n" + date;
 
-            if (!SocketManager.sendParallel(sql)) {
+            if (!SocketManager.sendParallel(queryAddTask)) {
                 Toast.makeText(this, R.string.send_failed, Toast.LENGTH_SHORT).show();
                 return;
             }
